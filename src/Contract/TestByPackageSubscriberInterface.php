@@ -11,5 +11,5 @@ interface TestByPackageSubscriberInterface
      */
     public function getPackageNames(): array;
 
-    public function getTestTemplateFilePath(): string;
+    public function getTemplateFilePath(): string;
 }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Rector\SmokeTestgen\Command;
 
+use Nette\Utils\FileSystem;
+use Rector\SmokeTestgen\Contract\TestByPackageSubscriberInterface;
 use Rector\SmokeTestgen\FIleSystem\TestsDirectoryResolver;
 use Rector\SmokeTestgen\TestTemplateResolver;
 use Rector\SmokeTestgen\Utils\JsonFileLoader;
@@ -54,9 +56,37 @@ final class GenerateCommand extends Command
             count($testByPackageSubscribers) > 1 ? 's' : ''
         ));
 
-        foreach ($testByPackageSubscribers as $testByPackageSubscriber) {
+        $generatedTestCount = 0;
 
+        foreach ($testByPackageSubscribers as $testByPackageSubscriber) {
+            $projectTestFilePath = $this->resolveProjectTestFilePath($testByPackageSubscriber, $smokeTestsDirectory);
+
+            if (file_exists($projectTestFilePath)) {
+                $symfonyStyle->writeln(sprintf('File <fg=green>%s</> already exists, skipping', $projectTestFilePath));
+                continue;
+            }
+
+            FileSystem::copy($testByPackageSubscriber->getTemplateFilePath(), getcwd() . '/' . $projectTestFilePath);
+
+            $symfonyStyle->writeln(sprintf(
+                'Generated new test file %s',
+                $projectTestFilePath
+            ));
+
+            ++$generatedTestCount;
         }
+
+        if ($generatedTestCount === 0) {
+            $symfonyStyle->success('No new test files were generated. All required tests already exist.');
+            return self::SUCCESS;
+        }
+
+        $symfonyStyle->success(sprintf(
+            'Generated %d new test file%s in "%s"',
+            $generatedTestCount,
+            $generatedTestCount > 1 ? 's' : '',
+            $smokeTestsDirectory
+        ));
 
         $symfonyStyle->newLine();
 
@@ -78,5 +108,15 @@ final class GenerateCommand extends Command
         Assert::allString($packageNames);
 
         return $packageNames;
+    }
+
+    private function resolveProjectTestFilePath(TestByPackageSubscriberInterface $testByPackageSubscriber, string $smokeTestsDirectory): string
+    {
+        Assert::fileExists($testByPackageSubscriber->getTemplateFilePath());
+
+        $absolutePath = $testByPackageSubscriber->getTemplateFilePath();
+        $testFileBasename = pathinfo($absolutePath, PATHINFO_BASENAME);
+
+        return $smokeTestsDirectory . '/' . $testFileBasename;
     }
 }

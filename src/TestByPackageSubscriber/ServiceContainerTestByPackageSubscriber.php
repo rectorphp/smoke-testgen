@@ -13,12 +13,11 @@ final class ServiceContainerTestByPackageSubscriber implements TestByPackageSubs
     {
         return [
             'symfony/symfony',
-            'symfony/console',
             'symfony/dependency-injection',
         ];
     }
 
-    public function getTestTemplateFilePath(): string
+    public function getTemplateFilePath(): string
     {
         return __DIR__ . '/../../templates/Symfony/ServiceContainerTest.php';
     }
