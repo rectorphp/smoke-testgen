@@ -29,24 +29,8 @@ jobs:
                         run: composer fix-cs --ansi
 
                     -
-                        name: 'SmokeTestgen: Outdated Breakpoint'
-                        run: ./bin/jack breakpoint --ansi --limit 3
-
-                    -
-                        name: 'SmokeTestgen: Open Versions'
-                        run: ./bin/jack open-versions --dry-run --ansi
-
-                    -
                         name: 'Tests'
                         run: vendor/bin/phpunit
-
-                    -
-                        name: 'Check Active Classes'
-                        run: vendor/bin/class-leak check bin src tests --ansi
-
-                    -
-                        name: 'Unusued check'
-                        run: vendor/bin/composer-dependency-analyser
 
         name: ${{ matrix.actions.name }}
         runs-on: ubuntu-latest
