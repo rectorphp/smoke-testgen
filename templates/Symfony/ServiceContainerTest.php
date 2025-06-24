@@ -26,7 +26,7 @@ final class ServiceContainerTest extends AbstractContainerTestCase
             try {
                 self::$container->get($serviceId);
             } catch (Throwable $throwable) {
-                $this->fail(sprintf('Service "%s" could not be created: %s', $serviceId, $throwable->getMessage()));
+                $this->fail(sprintf('Service "%s" could not be created because:%s%s', $serviceId, PHP_EOL, $throwable->getMessage()));
             }
 
             ++$checkedServiceCount;
@@ -42,26 +42,12 @@ final class ServiceContainerTest extends AbstractContainerTestCase
      */
     private function isDynamicService(string $serviceId): bool
     {
-        // not a service anymore, see @see https://symfony.com/blog/new-in-symfony-2-4-the-request-stack
         // the "session.storage.*" services invoke session, that crashes due to session_start()
         if (str_contains($serviceId, 'session')) {
             return true;
         }
 
         if (str_contains($serviceId, 'routing.loader.service')) {
-            return true;
-        }
-
-        // deprecated guzzle class
-        if (str_contains($serviceId, 'http_client.uri_template_expander')) {
-            return true;
-        }
-
-        if (str_contains($serviceId, 'debug.controller_resolver')) {
-            return true;
-        }
-
-        if (str_contains($serviceId, 'validator.mapping.cache.symfony')) {
             return true;
         }
 
@@ -75,7 +61,7 @@ final class ServiceContainerTest extends AbstractContainerTestCase
 
         return in_array(
             $serviceId,
-            ['kernel', 'database_connection', 'event_dispatcher'],
+            ['kernel', 'database_connection', 'event_dispatcher', 'debug.controller_resolver'],
             true
         );
     }

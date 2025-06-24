@@ -13,6 +13,7 @@ final class ServiceContainerTestByPackageSubscriber implements TestByPackageSubs
     {
         return [
             'symfony/symfony',
+            'symfony/console',
             'symfony/dependency-injection',
         ];
     }
