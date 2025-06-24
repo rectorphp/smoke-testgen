@@ -6,6 +6,7 @@ namespace Rector\SmokeTestgen\Command;
 
 use Nette\Utils\FileSystem;
 use Rector\SmokeTestgen\FIleSystem\TestsDirectoryResolver;
+use Rector\SmokeTestgen\TestTemplateResolver;
 use Rector\SmokeTestgen\Utils\JsonFileLoader;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -17,7 +18,8 @@ use Webmozart\Assert\Assert;
 final class GenerateCommand extends Command
 {
     public function __construct(
-        private TestsDirectoryResolver $testsDirectoryResolver,
+        private readonly TestsDirectoryResolver $testsDirectoryResolver,
+        private readonly TestTemplateResolver $testTemplateResolver
     ) {
         parent::__construct();
     }
@@ -37,15 +39,17 @@ final class GenerateCommand extends Command
         $smokeTestsDirectory = $this->testsDirectoryResolver->resolveSmokeUnitTestDirectory(getcwd());
         $symfonyStyle->writeln(' * ' . $smokeTestsDirectory);
 
-        // load composer.json and replace versions in "require" and "require-dev",
-        $composerJson = JsonFileLoader::loadFileToJson(getcwd() . '/composer.json');
+        $requirePackages = $this->resolveProjectRequiredPackageNames(getcwd());
 
-        // has symfony/symfony or symfony/dependency-injection
-        $requirePackages = $composerJson['require'] ?? [];
+        $testByPackageSubscribers = $this->testTemplateResolver->matchProjectPackages($requirePackages);
+
+        if ($testByPackageSubscribers === []) {
+            $symfonyStyle->warning('No test templates found for the required packages. Make sure you project uses Composer to manage version and has Symfony/Doctrine packages listed in "require" section');
+            return self::FAILURE;
+        }
 
 
-
-        dump($requirePackages);
+        dump($testByPackageSubscribers);
         die;
 
         $symfonyStyle->newLine();
@@ -105,4 +109,18 @@ final class GenerateCommand extends Command
 //
 //        return $testDirectory . '/' . $unitTestDirectory . '/Smoke';
 //    }
+
+    /**
+     * @return string[]
+     */
+    private function resolveProjectRequiredPackageNames(string $projectDirectory): array
+    {
+        // load composer.json and replace versions in "require" and "require-dev",
+        $composerJson = JsonFileLoader::loadFileToJson($projectDirectory . '/composer.json');
+
+        // has symfony/symfony or symfony/dependency-injection
+        $requirePackagesToVersions = $composerJson['require'] ?? [];
+
+        return array_keys($requirePackagesToVersions);
+    }
 }

@@ -3,7 +3,8 @@
     "description": "Generate smoke tests for Symfony projects to enable fast and safe changes",
     "license": "MIT",
     "require": {
-        "php": ">=7.2"
+        "php": ">=7.2",
+        "phpunit/phpunit": "*"
     },
     "bin": [
         "bin/smoke-testgen"

@@ -1,4 +1,4 @@
-# Smoke Testgen: Cover your Symfony app with Smoke Tests in seconds
+# Cover your Symfony app with Smoke Tests in seconds
 
 [![Downloads total](https://img.shields.io/packagist/dt/rector/smoke-testgen.svg?style=flat-square)](https://packagist.org/packages/rector/smoke-testgen/stats)
 

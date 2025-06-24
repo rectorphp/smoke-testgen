@@ -2,7 +2,9 @@
 
 namespace Rector\SmokeTestgen\TestByPackageSubscriber;
 
-final class ServiceContainerTestByPackageSubscriber implements \Rector\SmokeTestgen\Contract\TestByPackageSubscriberInterface
+use Rector\SmokeTestgen\Contract\TestByPackageSubscriberInterface;
+
+final class ServiceContainerTestByPackageSubscriber implements TestByPackageSubscriberInterface
 {
     /**
      * @return string[]
