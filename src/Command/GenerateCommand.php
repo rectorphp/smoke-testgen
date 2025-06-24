@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Rector\SmokeTestgen\Command;
 
 use Nette\Utils\FileSystem;
-use Rector\SmokeTestgen\ComposerProcessor\RaiseToInstalledComposerProcessor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -15,7 +14,6 @@ use Webmozart\Assert\Assert;
 final class GenerateCommand extends Command
 {
     public function __construct(
-        private readonly RaiseToInstalledComposerProcessor $raiseToInstalledComposerProcessor,
     ) {
         parent::__construct();
     }
