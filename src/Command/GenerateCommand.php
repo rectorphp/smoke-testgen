@@ -11,6 +11,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Webmozart\Assert\Assert;
 
 final class GenerateCommand extends Command
 {
@@ -73,6 +74,9 @@ final class GenerateCommand extends Command
         // has symfony/symfony or symfony/dependency-injection
         $requirePackagesToVersions = $composerJson['require'] ?? [];
 
-        return array_keys($requirePackagesToVersions);
+        $packageNames = array_keys($requirePackagesToVersions);
+        Assert::allString($packageNames);
+
+        return $packageNames;
     }
 }
