@@ -22,6 +22,7 @@ final class ContainerFactory
         // console
         $container->singleton(Application::class, function (Container $container): Application {
             $smokeTestgenConsoleApplication = new SmokeTestgenConsoleApplication('Rector Smoke Testgen');
+            $smokeTestgenConsoleApplication->setDefaultCommand('generate');
 
             $commandClasses = $this->findCommandClasses();
 
