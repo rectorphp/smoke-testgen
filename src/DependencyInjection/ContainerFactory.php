@@ -21,20 +21,20 @@ final class ContainerFactory
 
         // console
         $container->singleton(Application::class, function (Container $container): Application {
-            $jackConsoleApplication = new SmokeTestgenConsoleApplication('Rector Smoke Testgen');
+            $smokeTestgenConsoleApplication = new SmokeTestgenConsoleApplication('Rector Smoke Testgen');
 
             $commandClasses = $this->findCommandClasses();
 
             // register commands
             foreach ($commandClasses as $commandClass) {
                 $command = $container->make($commandClass);
-                $jackConsoleApplication->add($command);
+                $smokeTestgenConsoleApplication->add($command);
             }
 
             // remove basic command to make output clear
-            $this->hideDefaultCommands($jackConsoleApplication);
+            $this->hideDefaultCommands($smokeTestgenConsoleApplication);
 
-            return $jackConsoleApplication;
+            return $smokeTestgenConsoleApplication;
         });
 
         return $container;

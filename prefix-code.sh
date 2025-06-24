@@ -41,7 +41,7 @@ note "Dumping Composer Autoload"
 composer dump-autoload --ansi --classmap-authoritative --no-dev
 
 # make bin/ecs runnable without "php"
-chmod 777 "bin/jack"
-chmod 777 "bin/jack.php"
+chmod 777 "bin/smoke-testgen"
+chmod 777 "bin/smoke-testgen.php"
 
 note "Finished"
