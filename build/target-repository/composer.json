@@ -1,0 +1,16 @@
+{
+    "name": "rector/smoke-testgen",
+    "description": "Generate smoke tests for Symfony projects to enable fast and safe changes",
+    "license": "MIT",
+    "require": {
+        "php": ">=7.2"
+    },
+    "bin": [
+        "bin/smoke-testgen"
+    ],
+    "autoload": {
+        "psr-4": {
+            "Rector\\SmokeTestgen\\": "src"
+        }
+    }
+}
