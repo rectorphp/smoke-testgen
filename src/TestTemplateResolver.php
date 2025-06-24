@@ -29,15 +29,10 @@ final class TestTemplateResolver
         Assert::allString($requiredPackages);
 
         // find all subscribers, that match any of the required packages
-        $matchedSubscribers = [];
-        foreach ($this->testByPackageSubscribers as $testByPackageSubscriber) {
-            if (array_intersect($testByPackageSubscriber->getPackageNames(), $requiredPackages) === []) {
-                continue;
-            }
-
-            $matchedSubscribers[] = $testByPackageSubscriber;
-        }
-
-        return $matchedSubscribers;
+        return array_filter(
+            $this->testByPackageSubscribers,
+            fn (TestByPackageSubscriberInterface $testByPackageSubscriber): bool =>
+                array_intersect($testByPackageSubscriber->getPackageNames(), $requiredPackages) !== []
+        );
     }
 }
