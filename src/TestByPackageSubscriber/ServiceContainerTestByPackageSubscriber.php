@@ -19,6 +19,6 @@ final class ServiceContainerTestByPackageSubscriber implements TestByPackageSubs
 
     public function getTestTemplateFilePath(): string
     {
-        return __DIR__ . '/../../templates/Symfony';
+        return __DIR__ . '/../../templates/Symfony/ServiceContainerTest.php';
     }
 }
