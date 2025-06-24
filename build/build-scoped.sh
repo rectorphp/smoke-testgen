@@ -45,8 +45,8 @@ ls -l $RESULT_DIRECTORY
 note "Dumping Composer Autoload"
 composer dump-autoload --working-dir "$RESULT_DIRECTORY" --ansi --classmap-authoritative --no-dev
 
-# make bin/jack runnable without "php"
-chmod 777 "$RESULT_DIRECTORY/bin/jack"
-chmod 777 "$RESULT_DIRECTORY/bin/jack.php"
+# make bin/smoke-testgen runnable without "php"
+chmod 777 "$RESULT_DIRECTORY/bin/smoke-testgen"
+chmod 777 "$RESULT_DIRECTORY/bin/smoke-testgen.php"
 
 note "Finished"
