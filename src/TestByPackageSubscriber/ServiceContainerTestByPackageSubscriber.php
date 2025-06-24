@@ -11,10 +11,7 @@ final class ServiceContainerTestByPackageSubscriber implements TestByPackageSubs
      */
     public function getPackageNames(): array
     {
-        return [
-            'symfony/symfony',
-            'symfony/dependency-injection',
-        ];
+        return ['symfony/symfony', 'symfony/dependency-injection'];
     }
 
     public function getTemplateFilePath(): string

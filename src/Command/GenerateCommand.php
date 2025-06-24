@@ -43,7 +43,9 @@ final class GenerateCommand extends Command
         $testByPackageSubscribers = $this->testTemplateResolver->matchProjectPackages($requirePackages);
 
         if ($testByPackageSubscribers === []) {
-            $symfonyStyle->warning('No test templates found for the required packages. Make sure you project uses Composer to manage version and has Symfony/Doctrine packages listed in "require" section');
+            $symfonyStyle->warning(
+                'No test templates found for the required packages. Make sure you project uses Composer to manage version and has Symfony/Doctrine packages listed in "require" section'
+            );
             return self::FAILURE;
         }
 
@@ -69,10 +71,7 @@ final class GenerateCommand extends Command
 
             FileSystem::write($templateContents, $projectTestFilePath);
 
-            $symfonyStyle->writeln(sprintf(
-                'Generated new test file %s',
-                $projectTestFilePath
-            ));
+            $symfonyStyle->writeln(sprintf('Generated new test file %s', $projectTestFilePath));
 
             ++$generatedTestCount;
         }
@@ -111,8 +110,10 @@ final class GenerateCommand extends Command
         return $packageNames;
     }
 
-    private function resolveProjectTestFilePath(TestByPackageSubscriberInterface $testByPackageSubscriber, string $smokeTestsDirectory): string
-    {
+    private function resolveProjectTestFilePath(
+        TestByPackageSubscriberInterface $testByPackageSubscriber,
+        string $smokeTestsDirectory
+    ): string {
         Assert::fileExists($testByPackageSubscriber->getTemplateFilePath());
 
         $absolutePath = $testByPackageSubscriber->getTemplateFilePath();
