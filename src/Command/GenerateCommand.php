@@ -40,14 +40,12 @@ final class GenerateCommand extends Command
         $symfonyStyle->writeln(' * ' . $smokeTestsDirectory);
 
         $requirePackages = $this->resolveProjectRequiredPackageNames(getcwd());
-
         $testByPackageSubscribers = $this->testTemplateResolver->matchProjectPackages($requirePackages);
 
         if ($testByPackageSubscribers === []) {
             $symfonyStyle->warning('No test templates found for the required packages. Make sure you project uses Composer to manage version and has Symfony/Doctrine packages listed in "require" section');
             return self::FAILURE;
         }
-
 
         $symfonyStyle->newLine();
         $symfonyStyle->writeln(sprintf(
@@ -66,7 +64,10 @@ final class GenerateCommand extends Command
                 continue;
             }
 
-            FileSystem::copy($testByPackageSubscriber->getTemplateFilePath(), getcwd() . '/' . $projectTestFilePath);
+            $templateContents = FileSystem::read($testByPackageSubscriber->getTemplateFilePath());
+            $templateContents = $this->addjustTestFileNamespace($templateContents, $smokeTestsDirectory);
+
+            FileSystem::write($templateContents, $projectTestFilePath);
 
             $symfonyStyle->writeln(sprintf(
                 'Generated new test file %s',
@@ -118,5 +119,18 @@ final class GenerateCommand extends Command
         $testFileBasename = pathinfo($absolutePath, PATHINFO_BASENAME);
 
         return $smokeTestsDirectory . '/' . $testFileBasename;
+    }
+
+    private function addjustTestFileNamespace(string $templateContents, string $smokeTestsDirectory): string
+    {
+        if ($smokeTestsDirectory === 'tests/Unit/Smoke') {
+            // default one, nothing to adjust
+            return $templateContents;
+        }
+
+        $namespace = str_replace('/', '\\', $smokeTestsDirectory);
+        $namespace = lcfirst($namespace);
+
+        return str_replace('namespace App\Tests\Unit\Smoke', 'namespace App\\' . $namespace, $templateContents);
     }
 }
