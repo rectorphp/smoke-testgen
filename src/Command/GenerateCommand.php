@@ -85,7 +85,7 @@ final class GenerateCommand extends Command
         $projectTestCaseFilePath = $smokeTestsDirectory . '/AbstractContainerTestCase.php';
         if (! file_exists($projectTestCaseFilePath)) {
             $templateContents = FileSystem::read(__DIR__ . '/../../templates/Symfony/AbstractContainerTestCase.php');
-            FileSystem::write($projectTestFilePath, $templateContents);
+            FileSystem::write($projectTestCaseFilePath, $templateContents);
         }
 
         $symfonyStyle->success(sprintf(
