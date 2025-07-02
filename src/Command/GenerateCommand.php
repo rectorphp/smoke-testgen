@@ -6,6 +6,7 @@ namespace Rector\SmokeTestgen\Command;
 
 use Nette\Utils\FileSystem;
 use Rector\SmokeTestgen\FIleSystem\TestsDirectoryResolver;
+use Rector\SmokeTestgen\Templating\TemplateDecorator;
 use Rector\SmokeTestgen\TestTemplateResolver;
 use Rector\SmokeTestgen\Utils\JsonFileLoader;
 use Rector\SmokeTestgen\Utils\TestPathResolver;
@@ -19,7 +20,8 @@ final class GenerateCommand extends Command
 {
     public function __construct(
         private readonly TestsDirectoryResolver $testsDirectoryResolver,
-        private readonly TestTemplateResolver $testTemplateResolver
+        private readonly TestTemplateResolver $testTemplateResolver,
+        private readonly TemplateDecorator $templateDecorator
     ) {
         parent::__construct();
     }
@@ -46,12 +48,13 @@ final class GenerateCommand extends Command
             $symfonyStyle->warning(
                 'No test templates found for the required packages. Make sure you project uses Composer to manage version and has Symfony/Doctrine packages listed in "require" section'
             );
+
             return self::FAILURE;
         }
 
         $symfonyStyle->newLine();
         $symfonyStyle->writeln(sprintf(
-            'Found <fg=yellow>%d smoke test%s</>, that might come handy',
+            'Found <fg=yellow>%d smoke test%s</> that might come handy',
             count($testByPackageSubscribers),
             count($testByPackageSubscribers) > 1 ? 's' : ''
         ));
@@ -67,7 +70,7 @@ final class GenerateCommand extends Command
             }
 
             $templateContents = FileSystem::read($testByPackageSubscriber->getTemplateFilePath());
-            $templateContents = $this->addjustTestFileNamespace($templateContents, $smokeTestsDirectory);
+            $templateContents = $this->templateDecorator->decorate($templateContents, $smokeTestsDirectory);
 
             FileSystem::write($projectTestFilePath, $templateContents);
 
@@ -85,6 +88,8 @@ final class GenerateCommand extends Command
         $projectTestCaseFilePath = $smokeTestsDirectory . '/AbstractContainerTestCase.php';
         if (! file_exists($projectTestCaseFilePath)) {
             $templateContents = FileSystem::read(__DIR__ . '/../../templates/Symfony/AbstractContainerTestCase.php');
+            $templateContents = $this->templateDecorator->decorate($templateContents, $smokeTestsDirectory);
+
             FileSystem::write($projectTestCaseFilePath, $templateContents);
         }
 
@@ -115,18 +120,5 @@ final class GenerateCommand extends Command
         Assert::allString($packageNames);
 
         return $packageNames;
-    }
-
-    private function addjustTestFileNamespace(string $templateContents, string $smokeTestsDirectory): string
-    {
-        if ($smokeTestsDirectory === 'tests/Unit/Smoke') {
-            // default one, nothing to adjust
-            return $templateContents;
-        }
-
-        $namespace = str_replace('/', '\\', $smokeTestsDirectory);
-        $namespace = lcfirst($namespace);
-
-        return str_replace('namespace App\Tests\Unit\Smoke', 'namespace App\\' . $namespace, $templateContents);
     }
 }
