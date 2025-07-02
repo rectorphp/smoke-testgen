@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Rector\SmokeTestgen\Command;
 
 use Nette\Utils\FileSystem;
-use Rector\SmokeTestgen\FIleSystem\TestsDirectoryResolver;
+use Rector\SmokeTestgen\FileSystem\TestsDirectoryResolver;
 use Rector\SmokeTestgen\Templating\TemplateDecorator;
 use Rector\SmokeTestgen\TestTemplateResolver;
 use Rector\SmokeTestgen\Utils\JsonFileLoader;

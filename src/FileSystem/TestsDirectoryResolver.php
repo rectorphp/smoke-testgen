@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Rector\SmokeTestgen\FIleSystem;
+namespace Rector\SmokeTestgen\FileSystem;
 
 use Symfony\Component\Finder\Finder;
 
