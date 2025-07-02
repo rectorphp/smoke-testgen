@@ -58,6 +58,7 @@ final class GenerateCommand extends Command
 
         $generatedTestCount = 0;
 
+
         foreach ($testByPackageSubscribers as $testByPackageSubscriber) {
             $projectTestFilePath = $this->resolveProjectTestFilePath($testByPackageSubscriber, $smokeTestsDirectory);
 
@@ -79,6 +80,13 @@ final class GenerateCommand extends Command
         if ($generatedTestCount === 0) {
             $symfonyStyle->success('No new test files were generated. All required tests already exist.');
             return self::SUCCESS;
+        }
+
+        // make sure the abstract test case is always present
+        $projectTestCaseFilePath = $smokeTestsDirectory . '/AbstractContainerTestCase.php';
+        if (! file_exists($projectTestCaseFilePath)) {
+            $templateContents = FileSystem::read(__DIR__ . '/../../templates/Symfony/AbstractContainerTestCase.php');
+            FileSystem::write($templateContents, $projectTestFilePath);
         }
 
         $symfonyStyle->success(sprintf(
