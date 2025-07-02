@@ -58,7 +58,6 @@ final class GenerateCommand extends Command
 
         $generatedTestCount = 0;
 
-
         foreach ($testByPackageSubscribers as $testByPackageSubscriber) {
             $projectTestFilePath = $this->resolveProjectTestFilePath($testByPackageSubscriber, $smokeTestsDirectory);
 
