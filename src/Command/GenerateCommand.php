@@ -70,7 +70,7 @@ final class GenerateCommand extends Command
             }
 
             $templateContents = FileSystem::read($testByPackageSubscriber->getTemplateFilePath());
-            $templateContents = $this->templateDecorator->decorate($templateContents, $smokeTestsDirectory);
+            $templateContents = $this->templateDecorator->decorate($templateContents);
 
             FileSystem::write($projectTestFilePath, $templateContents);
 
@@ -88,7 +88,7 @@ final class GenerateCommand extends Command
         $projectTestCaseFilePath = $smokeTestsDirectory . '/AbstractContainerTestCase.php';
         if (! file_exists($projectTestCaseFilePath)) {
             $templateContents = FileSystem::read(__DIR__ . '/../../templates/Symfony/AbstractContainerTestCase.php');
-            $templateContents = $this->templateDecorator->decorate($templateContents, $smokeTestsDirectory);
+            $templateContents = $this->templateDecorator->decorate($templateContents);
 
             FileSystem::write($projectTestCaseFilePath, $templateContents);
         }

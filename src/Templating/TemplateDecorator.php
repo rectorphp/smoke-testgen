@@ -9,11 +9,11 @@ use Nette\Utils\Json;
 
 final class TemplateDecorator
 {
-    public function decorate(string $templateContents, string $smokeTestsDirectory): string
+    public function decorate(string $templateContents): string
     {
         $templateContents = $this->adjustKernelClass($templateContents);
 
-        return $this->adjustNamespace($smokeTestsDirectory, $templateContents);
+        return $this->adjustNamespace($templateContents);
     }
 
     private function adjustKernelClass(string $templateContents): string
@@ -37,7 +37,7 @@ final class TemplateDecorator
         return 'Kernel';
     }
 
-    private function adjustNamespace(string $templateContents, string $smokeTestsDirectory): string
+    private function adjustNamespace(string $templateContents): string
     {
         $projectTestsNamespace = $this->resolveProjectTestsNamespace();
         $smokeTestNamespace = $projectTestsNamespace . '\\Unit\\Smoke';
