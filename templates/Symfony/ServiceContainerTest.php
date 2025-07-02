@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Tests\Unit\Smoke;
+namespace __SMOKE_TEST_NAMESPACE__;
 
 use Throwable;
 

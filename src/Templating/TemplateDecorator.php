@@ -39,27 +39,28 @@ final class TemplateDecorator
 
     private function adjustNamespace(string $templateContents, string $smokeTestsDirectory): string
     {
+        $projectTestsNamespace = $this->resolveProjectTestsNamespace();
+        $smokeTestNamespace = $projectTestsNamespace . '\\Unit\\Smoke';
+
+        return str_replace('__SMOKE_TEST_NAMESPACE__', $smokeTestNamespace, $templateContents);
+    }
+
+    private function resolveProjectTestsNamespace(): string
+    {
         $composerJsonFilePath = getcwd() . '/composer.json';
         if (file_exists($composerJsonFilePath)) {
-            $projectComposerJson = Json::decode(FileSystem::read($composerJsonFilePath));
+            $projectComposerJson = Json::decode(FileSystem::read($composerJsonFilePath), true);
 
-            $requireDevPsr4 = $projectComposerJson['require-dev']['psr-4'] ?? null;
+            $autoloadDevPsr4 = $projectComposerJson['autoload-dev']['psr-4'] ?? [];
+            foreach ($autoloadDevPsr4 as $namespace => $directory) {
+                if ($directory === 'tests') {
+                    return rtrim($namespace, '\\');
+                }
+            }
 
-            dump($requireDevPsr4);
-            die;
         }
 
-        $projectComposerJson = json_decode(file_get_contents($composerJsonFilePath), true);
-
-        if ($smokeTestsDirectory === 'tests/Unit/Smoke') {
-            // default one, nothing to adjust
-            return $templateContents;
-        }
-
-        // @todo check with composer.json "psr-4" in require-dev
-        $namespace = str_replace('/', '\\', $smokeTestsDirectory);
-        $namespace = lcfirst($namespace);
-
-        return str_replace('namespace App\Tests\Unit\Smoke', 'namespace App\\' . $namespace, $templateContents);
+        // fallback to default
+        return 'App\Tests';
     }
 }
