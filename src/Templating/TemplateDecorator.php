@@ -53,7 +53,7 @@ final class TemplateDecorator
 
             $autoloadDevPsr4 = $projectComposerJson['autoload-dev']['psr-4'] ?? [];
             foreach ($autoloadDevPsr4 as $namespace => $directory) {
-                if ($directory === 'tests') {
+                if (in_array($directory, ['tests', 'tests/'], true)) {
                     return rtrim($namespace, '\\');
                 }
             }
