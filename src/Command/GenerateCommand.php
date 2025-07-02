@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Rector\SmokeTestgen\Command;
 
 use Nette\Utils\FileSystem;
-use Rector\SmokeTestgen\Contract\TestByPackageSubscriberInterface;
 use Rector\SmokeTestgen\FIleSystem\TestsDirectoryResolver;
 use Rector\SmokeTestgen\TestTemplateResolver;
 use Rector\SmokeTestgen\Utils\JsonFileLoader;
+use Rector\SmokeTestgen\Utils\TestPathResolver;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -59,7 +59,7 @@ final class GenerateCommand extends Command
         $generatedTestCount = 0;
 
         foreach ($testByPackageSubscribers as $testByPackageSubscriber) {
-            $projectTestFilePath = $this->resolveProjectTestFilePath($testByPackageSubscriber, $smokeTestsDirectory);
+            $projectTestFilePath = TestPathResolver::resolve($testByPackageSubscriber, $smokeTestsDirectory);
 
             if (file_exists($projectTestFilePath)) {
                 $symfonyStyle->writeln(sprintf('File <fg=green>%s</> already exists, skipping', $projectTestFilePath));
@@ -69,7 +69,7 @@ final class GenerateCommand extends Command
             $templateContents = FileSystem::read($testByPackageSubscriber->getTemplateFilePath());
             $templateContents = $this->addjustTestFileNamespace($templateContents, $smokeTestsDirectory);
 
-            FileSystem::write($templateContents, $projectTestFilePath);
+            FileSystem::write($projectTestFilePath, $templateContents);
 
             $symfonyStyle->writeln(sprintf('Generated new test file %s', $projectTestFilePath));
 
@@ -115,18 +115,6 @@ final class GenerateCommand extends Command
         Assert::allString($packageNames);
 
         return $packageNames;
-    }
-
-    private function resolveProjectTestFilePath(
-        TestByPackageSubscriberInterface $testByPackageSubscriber,
-        string $smokeTestsDirectory
-    ): string {
-        Assert::fileExists($testByPackageSubscriber->getTemplateFilePath());
-
-        $absolutePath = $testByPackageSubscriber->getTemplateFilePath();
-        $testFileBasename = pathinfo($absolutePath, PATHINFO_BASENAME);
-
-        return $smokeTestsDirectory . '/' . $testFileBasename;
     }
 
     private function addjustTestFileNamespace(string $templateContents, string $smokeTestsDirectory): string
